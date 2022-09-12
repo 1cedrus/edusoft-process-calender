@@ -1,6 +1,6 @@
 #include <curl/curl.h>
 
-// char infor[13][15][200];
+char infor[13][15][200];
 
 size_t parser(char *in, size_t nmem, size_t nitems, void* out) {
     size_t bytes = nmem * nitems;
@@ -19,9 +19,14 @@ size_t parser(char *in, size_t nmem, size_t nitems, void* out) {
         else if (flag == 3 && in[i] == '<') 
             cExtraArrow++;
 
-        else if (flag == 3 && in[i] == '>') 
+        else if (flag == 3 && in[i] == '>') {
             cExtraArrow--;
-
+            if (cExtraArrow == 0 && nInfor == 7 && in[i + 1] == '<') {
+                printf(" \n");
+                nInfor++;
+                flag = 1;
+            }   
+        }
 
         else if (flag == 3 && in[i] != '\n' && in[i] != '\r' && cExtraArrow == 0) {
             printf("%c", in[i]);
@@ -45,10 +50,6 @@ size_t parser(char *in, size_t nmem, size_t nitems, void* out) {
             }
         }
 
-        if (nInfor == 7 && in[i + 1] == '<') {
-            printf("\n");
-            nInfor++;
-        }
 
     }
     return bytes;

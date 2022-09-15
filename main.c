@@ -103,7 +103,7 @@ int main(void) {
     curl = curl_easy_init();
     if (curl) {
         struct curl_slist *chunk = NULL;
-        chunk = curl_slist_append(chunk, "Cookie: ASP.NET_SessionId=...");
+        chunk = curl_slist_append(chunk, "Cookie: ASP.NET_SessionId=mpgost55ka031445a3sktx45");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
         curl_easy_setopt(curl, CURLOPT_URL, "https://qldt.ptit.edu.vn/default.aspx?page=thoikhoabieu&sta=1");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, parser);

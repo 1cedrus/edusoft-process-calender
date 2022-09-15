@@ -19,6 +19,9 @@ void addSubject(subject *s) {
     // printf("%s\n", s->calender);
     // printf("%s\n", s->DSSV);
 
+    FILE *fp = fopen("data.json", "w");
+    fprintf(fp, "[]");
+    fclose(fp);
 
     json_object *data;
     json_object *newSubject = json_object_new_object();

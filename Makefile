@@ -1,10 +1,10 @@
 PROG = main
 CC = gcc
-LIBS = -lcurl 
+LIBS = -lcurl -ljson-c
 
 
-${PROG}: ${PROG}.c	
-	${CC} -o ${PROG} ${PROG}.c ${LIBS}
+${PROG}: ${PROG}.c data.c
+	${CC} -o ${PROG} ${PROG}.c data.c ${LIBS}
 
 clean: 
 	rm ${PROG}

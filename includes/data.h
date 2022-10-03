@@ -1,4 +1,4 @@
-typedef struct subject {
+typedef struct {
     char *ID;
     char *name;
     char *groupID;
@@ -12,9 +12,18 @@ typedef struct subject {
     char *ST;
     char *className;
     char *CBGV;
-    char *calender;
+    char *calendar;
     char *DSSV;
+} rawSubject;
+
+typedef struct {
+    char *name;
+    char *startTime;
+    char *endTime;
 } subject;
+
+
+
 
 
 void add(subject *s, int pos, char *buffer);

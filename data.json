@@ -12,7 +12,7 @@
         "Time": "1",
         "ST": "2",
         "ClassName": "405-A2",
-        "Calender": "123456789012345",
+        "Calendar": "123456789012345",
         "DSSV": " DSSV "
     },
     {
@@ -28,7 +28,7 @@
         "Time": "3",
         "ST": "2",
         "ClassName": "G03-A2",
-        "Calender": "123456789012345",
+        "Calendar": "123456789012345",
         "DSSV": " DSSV "
     },
     {
@@ -44,7 +44,7 @@
         "Time": "5",
         "ST": "2",
         "ClassName": "405-A2",
-        "Calender": "1234567",
+        "Calendar": "1234567",
         "DSSV": " DSSV "
     },
     {
@@ -60,7 +60,7 @@
         "Time": "7",
         "ST": "2",
         "ClassName": "801A-A2",
-        "Calender": "1234567",
+        "Calendar": "1234567",
         "DSSV": " DSSV "
     },
     {
@@ -76,7 +76,7 @@
         "Time": "3",
         "ST": "2",
         "ClassName": "201A-A3",
-        "Calender": "123456789012345",
+        "Calendar": "123456789012345",
         "DSSV": " DSSV "
     },
     {
@@ -92,7 +92,7 @@
         "Time": "1",
         "ST": "2",
         "ClassName": "303-A2",
-        "Calender": "12-4567890123456",
+        "Calendar": "12-4567890123456",
         "DSSV": " DSSV "
     },
     {
@@ -108,7 +108,7 @@
         "Time": "3",
         "ST": "2",
         "ClassName": "601-A2",
-        "Calender": "12-4567890123456",
+        "Calendar": "12-4567890123456",
         "DSSV": " DSSV "
     },
     {
@@ -124,7 +124,7 @@
         "Time": "1",
         "ST": "2",
         "ClassName": "404-A2",
-        "Calender": "12-4567890123456",
+        "Calendar": "12-4567890123456",
         "DSSV": " DSSV "
     },
     {
@@ -140,7 +140,7 @@
         "Time": "3",
         "ST": "2",
         "ClassName": "301-A2",
-        "Calender": "12-4567890123456",
+        "Calendar": "12-4567890123456",
         "DSSV": " DSSV "
     },
     {
@@ -156,7 +156,7 @@
         "Time": "1",
         "ST": "4",
         "ClassName": "CODE.PTIT.EDU.VN",
-        "Calender": "-----6---0---4",
+        "Calendar": "-----6---0---4",
         "DSSV": " DSSV "
     },
     {
@@ -172,7 +172,7 @@
         "Time": "5",
         "ST": "2",
         "ClassName": "201A-A3",
-        "Calender": "--------9012",
+        "Calendar": "--------9012",
         "DSSV": " DSSV "
     },
     {
@@ -188,7 +188,7 @@
         "Time": "5",
         "ST": "2",
         "ClassName": "301-A2",
-        "Calender": "--------9012345",
+        "Calendar": "--------9012345",
         "DSSV": " DSSV "
     },
     {
@@ -204,7 +204,7 @@
         "Time": "1",
         "ST": "4",
         "ClassName": "B-A3",
-        "Calender": "--------90",
+        "Calendar": "--------90",
         "DSSV": " DSSV "
     }
 ]

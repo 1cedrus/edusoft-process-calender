@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "includes/parser.h"
 #include "includes/data.h"
 #include <stdlib.h>
 
@@ -7,7 +6,7 @@ rawSubject *s = NULL;
 char *buffer = NULL;    
 
 size_t parser(char *in, size_t nmem, size_t nitems, void* out) {
-    // printf("%li\n", nmem);
+
     size_t bytes = nmem * nitems;
 
     static int flag = 0, cExtraArrow = 0, nSubjects = 0, nInfor = 0, count = 0;  
@@ -32,7 +31,7 @@ size_t parser(char *in, size_t nmem, size_t nitems, void* out) {
             cExtraArrow--;
 
             if (cExtraArrow == 0 && nInfor == 7 && in[i + 1] == '<') {
-                printf(" \n");
+                // printf(" \n");
                 count += 1;
                 buffer = realloc(buffer, count);
                 buffer[count - 1] = '\0';
@@ -45,42 +44,61 @@ size_t parser(char *in, size_t nmem, size_t nitems, void* out) {
         }
 
         else if (flag == 3 && in[i] != '\n' && in[i] != '\r' && cExtraArrow == 0) {
-            printf("%c", in[i]);
+            // printf("%c", in[i]);
             count += 1;
             buffer = realloc(buffer, count);
             buffer[count - 1] = in[i];
 
             if (in[i + 1] == '<') {
-                printf("\n");
+                // printf("\n");
                 flag = 1;
                 count += 1;
                 buffer = realloc(buffer, count);
                 buffer[count - 1] = '\0';
-                printf("%s\t%i\n", buffer, count);
+                // printf("%s\t%i\n", buffer, count);
                 add(s, nInfor, buffer);
-                // free(buffer);
                 buffer = NULL;
                 count = 0;
                 nInfor += 1;
             }
 
             if (nInfor == 15) {
-                printf("//////////\n");
+                // printf("//////////\n");
                 addSubject(s);
-                // // free(s);
-                // s = NULL;
-                // s = malloc(sizeof(subject));
                 nSubjects++;
                 nInfor = 0;
-                // continue;
             }    
 
             if (nSubjects == 13) {
                 flag = -1;
-                // printf("%s", data);
                 return bytes;
             }
         }
     }
     return bytes;
+}
+
+void getDataFromWeb(void) {
+    CURL *curl;
+    CURLcode code;
+
+    curl = curl_easy_init();
+    if (curl) {
+        struct curl_slist *chunk = NULL;
+        chunk = curl_slist_append(chunk, "Cookie: ASP.NET_SessionId=mpgost55ka031445a3sktx45");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+        curl_easy_setopt(curl, CURLOPT_URL, "https://qldt.ptit.edu.vn/default.aspx?page=thoikhoabieu&sta=1");
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, parser);
+
+        code = curl_easy_perform(curl);
+        if(code != CURLE_OK) perror("Failed to request");
+
+        curl_easy_cleanup(curl);   
+        curl_slist_free_all(chunk);    
+    }
+}
+
+int main (void) {
+    getDataFromWeb();
+    return 0;
 }

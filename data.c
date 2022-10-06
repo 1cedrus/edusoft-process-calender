@@ -1,28 +1,13 @@
 #include <json-c/json.h>
 #include <stdio.h>
-#include "includes/data.h"
 #include <curl/curl.h>
-#include "includes/parser.h"
 #include <string.h>
 #include <stdlib.h>
+#include "includes/data.h"
+#include "includes/calendar.h"
 
 
 void addSubject(rawSubject *s) {
-
-    // printf("%s\n", s->ID);
-    // printf("%s\n", s->name);
-    // printf("%s\n", s->groupID);
-    // printf("%s\n", s->STC_1);
-    // printf("%s\n", s->classID);
-    // printf("%s\n", s->STC_2);
-    // printf("%s\n", s->KDK);
-    // printf("%s\n", s->TH);
-    // printf("%s\n", s->day);
-    // printf("%s\n", s->ST);
-    // printf("%s\n", s->className);
-    // printf("%s\n", s->calender);
-    // printf("%s\n", s->DSSV);
-
     FILE *fp = fopen("data.json", "w");
     fprintf(fp, "[]");
     fclose(fp);
@@ -116,12 +101,14 @@ void add(rawSubject *s, int pos, char *buffer) {
     }
 }
 
-void dataProcess(subject *s) {
+void updateCalendar(subject *s) {
+
+    clearData("check.log");
 
     json_object *database, *rawName, *rawGroupID, *rawDay, *rawTime, *rawST, *rawClassName, *rawCalendar, *rawSub;
     size_t nOfSub;
 
-    database = json_object_from_file("data.json");
+    database = json_object_from_file("./crawler/rawSubjects.json");
     nOfSub = json_object_array_length(database);
 
     for (int sub = 0; sub < nOfSub; sub++) {
@@ -140,7 +127,6 @@ void dataProcess(subject *s) {
         const char *calendar = json_object_get_string(rawCalendar);
         for (int week = 0; week < strlen(calendar); week++) {
             if (week != 0) dateUpdater(date, 7);
-            // printf("%s\n", date);
             if (isDigit(calendar[week])) {
                 char *dateClone = strdup(date);
                 dateUpdater(dateClone, dayConvert(json_object_get_string(rawDay))); 
@@ -155,8 +141,7 @@ void dataProcess(subject *s) {
                 else 
                     sprintf(s->endTime, "%sT0%i:50:00+07:00", dateClone, endTime);
 
-                dataUploader(s);
-                // printf("%s\t%s\t%s\n", s->name, s->startTime, s->endTime);
+                calendarEventRes(s);
             }
         }
     }
@@ -297,119 +282,13 @@ int endTimeGener(const char *rawTime, const char *rawST) {
     }
 }
 
-
-
-void dataUploader(subject *s) {
-    CURL *curl;
-    CURLcode res;
-
-    char accessToken[250];
-    readAccessTokenFromFile(accessToken);
-
-    char headerAuthCheck[300];
-    sprintf(headerAuthCheck, "Authorization: Bearer %s", accessToken);
-
-
-    char paramaterJson[400];
-    sprintf (paramaterJson, "{\"summary\":\"%s\",\"end\":{\"dateTime\":\"%s\",\"timeZone\":\"Asia/Ho_Chi_Minh\"},\"start\":{\"dateTime\":\"%s\",\"timeZone\":\"Asia/Ho_Chi_Minh\"}}", s->name, s->endTime, s->startTime);
-
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-
-    curl = curl_easy_init();
-    if(curl) {
-        struct curl_slist *chunk = NULL;
-        chunk = curl_slist_append(chunk, headerAuthCheck);
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-        curl_easy_setopt(curl, CURLOPT_URL, "https://www.googleapis.com/calendar/v3/calendars/primary/events/");
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, paramaterJson);
-
-        res = curl_easy_perform(curl);
-
-    /* Check for errors */ 
-        if(res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                curl_easy_strerror(res));
-
-    /* always cleanup */ 
-        curl_easy_cleanup(curl);
-    }
-
-    curl_global_cleanup();
-}
-
-void getDataFromWeb(void) {
-    CURL *curl;
-    CURLcode code;
-
-    curl = curl_easy_init();
-    if (curl) {
-        struct curl_slist *chunk = NULL;
-        chunk = curl_slist_append(chunk, "Cookie: ASP.NET_SessionId=mpgost55ka031445a3sktx45");
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-        curl_easy_setopt(curl, CURLOPT_URL, "https://qldt.ptit.edu.vn/default.aspx?page=thoikhoabieu&sta=1");
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, parser);
-
-        code = curl_easy_perform(curl);
-        if(code != CURLE_OK) 
-            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(code));
-
-        curl_easy_cleanup(curl);   
-        curl_slist_free_all(chunk);    
-    }
+void checkLog(subject *s) {
+    FILE *fp = fopen("check.log", "a");
+    fprintf(fp, "%s\t%s\t%s\n", s->name, s->startTime, s->endTime);
+    fclose(fp);
 }
 
 void clearData(char *fileName) {
     FILE *fp = fopen(fileName, "w"); 
     fclose(fp);
-}
-
-
-void getAccessToken(int argc, char *argv[]) {
-    CURL *curl;
-    CURLcode res;
-    clearData("access_token.json");
-    char paramaterInNeed[300];
-    sprintf(paramaterInNeed, "client_id=812237032448-g3s99dj31nlt7i9hp1f2beltkc8rirhk.apps.googleusercontent.com&code=%s&client_secret=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&redirect_uri=urn:ietf:wg:oauth:2.0:oob&grant_type=authorization_code", argv[1]);
-    // return;
-    
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-
-    curl = curl_easy_init();
-    if(curl) {
-        struct curl_slist *chunk = NULL;
-        chunk = curl_slist_append(chunk, "Content-type: application/x-www-form-urlencoded");
-        chunk = curl_slist_append(chunk, "Cache-Control: no-cache");
-
-        curl_easy_setopt(curl, CURLOPT_URL, "https://accounts.google.com/o/oauth2/v2/auth");
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-        curl_easy_setopt(curl, CURLOPT_URL, "https://accounts.google.com/o/oauth2/token");
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, paramaterInNeed);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, saveAccessToken);
-        
-        res = curl_easy_perform(curl);
-
-
-        if(res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                curl_easy_strerror(res));
-
-        curl_easy_cleanup(curl);
-    }
-    curl_global_cleanup();
-}
-
-size_t saveAccessToken(char *in, size_t nmem, size_t nitems, void* out) {
-    size_t bytes = nmem * nitems;
-    FILE *fp = fopen("access_token.json", "a"); 
-    fprintf(fp, "%s", in);
-    fclose(fp);
-    return bytes;
-}
-
-void readAccessTokenFromFile(char *accessToken) {
-    json_object *database = json_object_from_file("access_token.json");
-    // json_object *rawRespond = json_object_array_get_idx(database, 0);
-    json_object *rawAccessToken = json_object_object_get(database, "access_token");
-    sprintf(accessToken, "%s", json_object_get_string(rawAccessToken));
-    // printf("%s", json_object_get_string(rawAccessToken));
 }

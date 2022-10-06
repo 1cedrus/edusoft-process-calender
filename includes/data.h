@@ -1,3 +1,4 @@
+// 
 typedef struct {
     char *ID;
     char *name;
@@ -21,18 +22,17 @@ typedef struct {
     char startTime[50];
     char endTime[50];
 } subject;
+//
+// Public
+void updateCalendar(subject *s);
+void clearData(char *fileName);
 
-
-void dataProcess(subject *s);
+// Private
 void add(rawSubject *s, int pos, char *buffer);
 void addSubject(rawSubject *s);
-void dataUploader(subject *s);
 int endTimeGener(const char *rawTime, const char *rawST);
 int startTimeGener(const char *rawTime);
 int dayThisMonthHas(int month);
 void dateUpdater(char *date, int dayIsRaised);
 int dayConvert(const char *rawDay);
 int isDigit(char ch);
-size_t saveAccessToken(char *in, size_t nmem, size_t nitems, void* out);
-void getAccessToken(int argc, char *argv[]);
-void readAccessTokenFromFile(char *accessToken);

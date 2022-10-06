@@ -6,6 +6,7 @@
         "stdlib.h": "c",
         "typeinfo": "c",
         "data.h": "c",
-        "send.h": "c"
+        "send.h": "c",
+        "auth.h": "c"
     }
 }

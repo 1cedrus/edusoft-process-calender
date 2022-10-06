@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #include "includes/parser.h"
 #include <string.h>
+#include <stdlib.h>
 
 
 void addSubject(rawSubject *s) {
@@ -117,56 +118,54 @@ void add(rawSubject *s, int pos, char *buffer) {
 
 void dataProcess(subject *s) {
 
-    // json_object *database, *rawName, *rawGroupID, *rawDay, *rawTime, *rawST, *rawClassName, *rawCalendar, *rawSub;
-    // size_t nOfSub;
+    json_object *database, *rawName, *rawGroupID, *rawDay, *rawTime, *rawST, *rawClassName, *rawCalendar, *rawSub;
+    size_t nOfSub;
 
-    // database = json_object_from_file("data.json");
-    // nOfSub = json_object_array_length(database);
+    database = json_object_from_file("data.json");
+    nOfSub = json_object_array_length(database);
 
-    // for (int sub = 0; sub < nOfSub; sub++) {
-    //     rawSub = json_object_array_get_idx(database, sub);
-    //     rawName = json_object_object_get(rawSub, "Name");
-    //     rawGroupID = json_object_object_get(rawSub, "GroupID");
-    //     rawDay = json_object_object_get(rawSub, "Day");
-    //     rawTime = json_object_object_get(rawSub, "Time");
-    //     rawST = json_object_object_get(rawSub, "ST");
-    //     rawClassName = json_object_object_get(rawSub, "ClassName");
-    //     rawCalendar = json_object_object_get(rawSub, "Calendar");
+    for (int sub = 0; sub < nOfSub; sub++) {
+        rawSub = json_object_array_get_idx(database, sub);
+        rawName = json_object_object_get(rawSub, "Name");
+        rawGroupID = json_object_object_get(rawSub, "GroupID");
+        rawDay = json_object_object_get(rawSub, "Day");
+        rawTime = json_object_object_get(rawSub, "Time");
+        rawST = json_object_object_get(rawSub, "ST");
+        rawClassName = json_object_object_get(rawSub, "ClassName");
+        rawCalendar = json_object_object_get(rawSub, "Calendar");
 
-        // strcmps->name, "%s %s", json_object_get_string(rawSub), json_object_get_string(rawClassName));
-        // strcat(s->name, json_object_get_string(rawSub));
-        // strcat(s->name, json_object_get_string(rawClassName));
+        sprintf(s->name, "%s x %s", json_object_get_string(rawName), json_object_get_string(rawClassName));
+        int startTime, endTime;
+        char date[] = "2022-08-15";
+        const char *calendar = json_object_get_string(rawCalendar);
+        for (int week = 0; week < strlen(calendar); week++) {
+            if (week != 0) dateUpdater(date, 7);
+            // printf("%s\n", date);
+            if (isDigit(calendar[week])) {
+                char *dateClone = strdup(date);
+                dateUpdater(dateClone, dayConvert(json_object_get_string(rawDay))); 
+                startTime = startTimeGener(json_object_get_string(rawTime));
+                endTime = endTimeGener(json_object_get_string(rawTime), json_object_get_string(rawST));
+                if (startTime >= 10) 
+                    sprintf(s->startTime, "%sT%i:00:00+07:00", dateClone, startTime);
+                else 
+                    sprintf(s->startTime, "%sT0%i:00:00+07:00", dateClone, startTime);
+                if (endTime >= 10) 
+                    sprintf(s->endTime, "%sT%i:50:00+07:00", dateClone, endTime);
+                else 
+                    sprintf(s->endTime, "%sT0%i:50:00+07:00", dateClone, endTime);
 
-
-        sprintf(s->nameOfSub, "anhyeuem");
-        // int startTime, endTime;
-        // char *calendar = json_object_get_string(rawCalendar);
-        // for (int week = 0; week < strlen(calendar); week++) {
-        //     if (isDigit(calendar[week])) {
-        //         char date[] = "2022-08-15";
-        //         dateUpdater(date, week*7);
-        //         dateUpdater(date, dayConvert(json_object_get_string(rawDay)));
-        //         startTime = startTimeGener(json_object_get_string(rawTime));
-        //         endTime = endTimeGener(json_object_get_string(rawTime), json_object_get_string(rawST));
-        //         if (startTime >= 10) 
-        //             sprintf(s->startTime, "%sT%i:00:00+07:00", date, startTime);
-        //         else 
-        //             sprintf(s->startTime, "%sT0%i:00:00+07:00", date, startTime);
-        //         if (endTime >= 10) 
-        //             sprintf(s->endTime, "%sT%i:50:00+07:00", date, endTime);
-        //         else 
-        //             sprintf(s->endTime, "%sT0%i:50:00+07:00", date, endTime);
-
-        //         dataUploader(s);
-        //     }
-        // }
-    // }
+                dataUploader(s);
+                // printf("%s\t%s\t%s\n", s->name, s->startTime, s->endTime);
+            }
+        }
+    }
 }
 
 int dayConvert(const char *rawDay) {
     if (!strcmp(rawDay, "Hai")) return 0;
     if (!strcmp(rawDay, "Ba")) return 1;
-    if (!strcmp(rawDay, "Bốn")) return 2;
+    if (!strcmp(rawDay, "Tư")) return 2;
     if (!strcmp(rawDay, "Năm")) return 3;
     if (!strcmp(rawDay, "Sáu")) return 4;
     if (!strcmp(rawDay, "Bảy")) return 5;
@@ -179,6 +178,7 @@ int isDigit(char ch) {
 }
 
 void dateUpdater(char *date, int dayIsRaised) {
+    if (dayIsRaised == 0) return;
     int year, month, day, count = 0;
     char *token = strtok(date, "-");
     while (token != NULL) {
@@ -186,6 +186,7 @@ void dateUpdater(char *date, int dayIsRaised) {
         if (count == 1) month = atoi(token);
         if (count == 2) day = atoi(token);
         count++;
+        token = strtok(NULL, "-");
     }
     
     day += dayIsRaised;
@@ -202,7 +203,7 @@ void dateUpdater(char *date, int dayIsRaised) {
         day -= 30;
         month += 1;
     }
-    else {
+    else if (dayThisMonthHas(month == 2)) {
         if (year % 4 == 0 && year % 100 != 0 && day > 29) {
             day -= 29;
             month += 1;
@@ -212,7 +213,14 @@ void dateUpdater(char *date, int dayIsRaised) {
             month += 1;
         }
     }
-    sprintf(date, "%i-%i-%i", year, month, day);
+    if (month < 10 && day < 10) 
+        sprintf(date, "%i-0%i-0%i", year, month, day);
+    else if (month < 10)     
+        sprintf(date, "%i-0%i-%i", year, month, day);
+    else if (day < 10)
+        sprintf(date, "%i-%i-0%i", year, month, day);
+    else 
+        sprintf(date, "%i-%i-%i", year, month, day);
 }
 
 int dayThisMonthHas(int month) {
@@ -236,7 +244,7 @@ int dayThisMonthHas(int month) {
             break;
 
         case 2:
-            return 3;
+            return 2;
             break;
     }
 }
@@ -269,22 +277,22 @@ int endTimeGener(const char *rawTime, const char *rawST) {
     switch (atoi(rawTime))
     {
     case 1:
-        return 7 + atoi(rawST);
+        return 7 + atoi(rawST) - 1;
         break;
     case 3:
-        return 9 + atoi(rawST);
+        return 9 + atoi(rawST) - 1;
         break;
     case 5:
-        return 12 + atoi(rawST);
+        return 12 + atoi(rawST) - 1;
         break;
     case 7:
-        return 14 + atoi(rawST);
+        return 14 + atoi(rawST) - 1;
         break;
     case 9:
-        return 16 + atoi(rawST);
+        return 16 + atoi(rawST) - 1;
         break;
     case 11:
-        return 18 + atoi(rawST);
+        return 18 + atoi(rawST) - 1;
         break;
     }
 }
@@ -295,15 +303,22 @@ void dataUploader(subject *s) {
     CURL *curl;
     CURLcode res;
 
-    char *paramaterJson;
-    sprintf (paramaterJson, "{\"summary\":\"%s\",\"end\":{\"dateTime\":\"%s\",\"timeZone\":\"Asia/Ho_Chi_Minh\"},\"start\":{\"dateTime\":\"%s\",\"timeZone\":\"Asia/Ho_Chi_Minh\"}}", s->nameOfSub, s->endTime, s->startTime);
+    char accessToken[250];
+    readAccessTokenFromFile(accessToken);
+
+    char headerAuthCheck[300];
+    sprintf(headerAuthCheck, "Authorization: Bearer %s", accessToken);
+
+
+    char paramaterJson[400];
+    sprintf (paramaterJson, "{\"summary\":\"%s\",\"end\":{\"dateTime\":\"%s\",\"timeZone\":\"Asia/Ho_Chi_Minh\"},\"start\":{\"dateTime\":\"%s\",\"timeZone\":\"Asia/Ho_Chi_Minh\"}}", s->name, s->endTime, s->startTime);
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
 
     curl = curl_easy_init();
     if(curl) {
         struct curl_slist *chunk = NULL;
-        chunk = curl_slist_append(chunk, "Authorization: Bearer ya29.a0Aa4xrXNniMv0tbYP-o7JOGivxAhKBz0CsxpJKpwu0QU4U7fWOW4pQ3aqin36O8lmYSvRBA5JrG5TuKqcEl1xJNzok7uWjZf_gMRrYefyCr55Xrh95Z1sJ_GA69N1TlAv58ylO7FqztrBeRHYB6yiYuk-LFxQaCgYKATASARISFQEjDvL9IRsAaHOLcmN-EpMwwu3Cgw0163");
+        chunk = curl_slist_append(chunk, headerAuthCheck);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
         curl_easy_setopt(curl, CURLOPT_URL, "https://www.googleapis.com/calendar/v3/calendars/primary/events/");
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, paramaterJson);
@@ -349,13 +364,13 @@ void clearData(char *fileName) {
 }
 
 
-void getAccessToken(char *argv[]) {
+void getAccessToken(int argc, char *argv[]) {
     CURL *curl;
     CURLcode res;
     clearData("access_token.json");
-
-    char *paramaterInNeed;
+    char paramaterInNeed[300];
     sprintf(paramaterInNeed, "client_id=812237032448-g3s99dj31nlt7i9hp1f2beltkc8rirhk.apps.googleusercontent.com&code=%s&client_secret=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&redirect_uri=urn:ietf:wg:oauth:2.0:oob&grant_type=authorization_code", argv[1]);
+    // return;
     
     curl_global_init(CURL_GLOBAL_DEFAULT);
 
@@ -389,4 +404,12 @@ size_t saveAccessToken(char *in, size_t nmem, size_t nitems, void* out) {
     fprintf(fp, "%s", in);
     fclose(fp);
     return bytes;
+}
+
+void readAccessTokenFromFile(char *accessToken) {
+    json_object *database = json_object_from_file("access_token.json");
+    // json_object *rawRespond = json_object_array_get_idx(database, 0);
+    json_object *rawAccessToken = json_object_object_get(database, "access_token");
+    sprintf(accessToken, "%s", json_object_get_string(rawAccessToken));
+    // printf("%s", json_object_get_string(rawAccessToken));
 }

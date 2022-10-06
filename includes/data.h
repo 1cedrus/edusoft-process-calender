@@ -17,7 +17,7 @@ typedef struct {
 } rawSubject;
 
 typedef struct {
-    char nameOfSub[100];
+    char name[100];
     char startTime[50];
     char endTime[50];
 } subject;
@@ -34,3 +34,5 @@ void dateUpdater(char *date, int dayIsRaised);
 int dayConvert(const char *rawDay);
 int isDigit(char ch);
 size_t saveAccessToken(char *in, size_t nmem, size_t nitems, void* out);
+void getAccessToken(int argc, char *argv[]);
+void readAccessTokenFromFile(char *accessToken);

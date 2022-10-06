@@ -17,14 +17,20 @@ typedef struct {
 } rawSubject;
 
 typedef struct {
-    char *name;
-    char *startTime;
-    char *endTime;
+    char nameOfSub[100];
+    char startTime[50];
+    char endTime[50];
 } subject;
 
 
-
-
-
-void add(subject *s, int pos, char *buffer);
-void addSubject(subject *s);
+void dataProcess(subject *s);
+void add(rawSubject *s, int pos, char *buffer);
+void addSubject(rawSubject *s);
+void dataUploader(subject *s);
+int endTimeGener(const char *rawTime, const char *rawST);
+int startTimeGener(const char *rawTime);
+int dayThisMonthHas(int month);
+void dateUpdater(char *date, int dayIsRaised);
+int dayConvert(const char *rawDay);
+int isDigit(char ch);
+size_t saveAccessToken(char *in, size_t nmem, size_t nitems, void* out);

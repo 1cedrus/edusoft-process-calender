@@ -2,6 +2,10 @@
     "C_Cpp.errorSquiggles": "Disabled",
     "files.associations": {
         "algorithm": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "stdlib.h": "c",
+        "typeinfo": "c",
+        "data.h": "c",
+        "send.h": "c"
     }
 }

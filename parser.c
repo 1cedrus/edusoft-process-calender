@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include "includes/parser.h"
+#include "includes/data.h"
 #include <stdlib.h>
 
-subject *s = NULL;
+rawSubject *s = NULL;
 char *buffer = NULL;    
 
 size_t parser(char *in, size_t nmem, size_t nitems, void* out) {

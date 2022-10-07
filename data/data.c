@@ -3,15 +3,12 @@
 #include <curl/curl.h>
 #include <string.h>
 #include <stdlib.h>
-#include "includes/data.h"
-#include "includes/calendar.h"
+#include "data.h"
+#include "../auth/auth.h"
 
 
 void addSubject(rawSubject *s) {
-    FILE *fp = fopen("data.json", "w");
-    fprintf(fp, "[]");
-    fclose(fp);
-
+    
     json_object *data;
     json_object *newSubject = json_object_new_object();
     json_object *newID = json_object_new_string(s->ID);
@@ -44,9 +41,9 @@ void addSubject(rawSubject *s) {
     json_object_object_add(newSubject, "Calender", newCalendar);
     json_object_object_add(newSubject, "DSSV", newDSSV);
 
-    data = json_object_from_file("data.json");
+    data = json_object_from_file("./crawler/rawSubject.json");
     json_object_array_add(data, newSubject);
-    json_object_to_file("data.json", data);
+    json_object_to_file("./crawler/rawSubject.json", data);
 }
 
 
@@ -103,7 +100,7 @@ void add(rawSubject *s, int pos, char *buffer) {
 
 void updateCalendar(subject *s) {
 
-    clearData("check.log");
+    clearData("../check.log");
 
     json_object *database, *rawName, *rawGroupID, *rawDay, *rawTime, *rawST, *rawClassName, *rawCalendar, *rawSub;
     size_t nOfSub;
@@ -142,6 +139,7 @@ void updateCalendar(subject *s) {
                     sprintf(s->endTime, "%sT0%i:50:00+07:00", dateClone, endTime);
 
                 calendarEventRes(s);
+                checkLog(s);
             }
         }
     }
@@ -283,7 +281,7 @@ int endTimeGener(const char *rawTime, const char *rawST) {
 }
 
 void checkLog(subject *s) {
-    FILE *fp = fopen("check.log", "a");
+    FILE *fp = fopen("../check.log", "a");
     fprintf(fp, "%s\t%s\t%s\n", s->name, s->startTime, s->endTime);
     fclose(fp);
 }
@@ -291,4 +289,39 @@ void checkLog(subject *s) {
 void clearData(char *fileName) {
     FILE *fp = fopen(fileName, "w"); 
     fclose(fp);
+}
+
+void calendarEventRes(subject *s) {
+
+    CURL *curl;
+    CURLcode res;
+
+    char accessToken[250];
+    getAccessTokenFromFile(accessToken);
+
+    char headerAuth[300];
+    sprintf(headerAuth, "Authorization: Bearer %s", accessToken);
+
+    char paramaterInNeed[400];
+    sprintf (paramaterInNeed, "{\"summary\":\"%s\",\"end\":{\"dateTime\":\"%s\",\"timeZone\":\"Asia/Ho_Chi_Minh\"},\"start\":{\"dateTime\":\"%s\",\"timeZone\":\"Asia/Ho_Chi_Minh\"}}", s->name, s->endTime, s->startTime);
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+
+    curl = curl_easy_init();
+    if(curl) {
+        struct curl_slist *chunk = NULL;
+        chunk = curl_slist_append(chunk, headerAuth);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+        curl_easy_setopt(curl, CURLOPT_URL, "https://www.googleapis.com/calendar/v3/calendars/primary/events/");
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, paramaterInNeed);
+
+        res = curl_easy_perform(curl);
+
+        if(res != CURLE_OK)
+            perror("Failed to request");
+
+        curl_easy_cleanup(curl);
+    }
+
+    curl_global_cleanup();
 }

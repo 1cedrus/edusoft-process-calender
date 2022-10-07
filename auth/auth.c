@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <curl/curl.h>
 #include <json-c/json.h>
-#include "includes/data.h"
-#include "includes/auth.h"
+#include "../data/data.h"
+#include "auth.h"
 
-void requestAccessToken(char *authCode) {
+int requestAccessToken(char *authCode) {
 
     CURL *curl;
     CURLcode res;
@@ -31,12 +31,17 @@ void requestAccessToken(char *authCode) {
         
         res = curl_easy_perform(curl);
 
-        if(res != CURLE_OK) perror("Failed to request access token");
+        if(res != CURLE_OK) {
+            perror("Failed to request access token");
+            return 1;
+        }
 
         curl_easy_cleanup(curl);
     }
 
     curl_global_cleanup();
+
+    return 0;
 }
 
 void getAccessTokenFromFile(char *accessToken) {

@@ -82,10 +82,18 @@ void getDataFromWeb(void) {
     CURL *curl;
     CURLcode code;
 
+    char sessionID[200];
+    FILE *fp =  fopen("sessionID.ssid", "r");
+    fscanf(fp, "%199s", sessionID);
+    fclose(fp);
+
+    char header[250];
+    sprintf(header, "Cookie: ASP.NET_SessionId=%s", sessionID);
+
     curl = curl_easy_init();
     if (curl) {
         struct curl_slist *chunk = NULL;
-        chunk = curl_slist_append(chunk, "Cookie: ASP.NET_SessionId=mpgost55ka031445a3sktx45");
+        chunk = curl_slist_append(chunk, header);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
         curl_easy_setopt(curl, CURLOPT_URL, "https://qldt.ptit.edu.vn/default.aspx?page=thoikhoabieu&sta=1");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, parser);
@@ -99,6 +107,11 @@ void getDataFromWeb(void) {
 }
 
 int main (void) {
+
+    FILE *fp = fopen("rawSubject.json", "w");
+    fprintf(fp, "[]");
+    fclose(fp);
+
     getDataFromWeb();
     return 0;
 }

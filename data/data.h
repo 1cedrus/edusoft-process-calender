@@ -25,6 +25,7 @@ typedef struct {
 //
 // Public
 void updateCalendar(subject *s);
+void calendarEventRes(subject *s);
 void clearData(char *fileName);
 
 // Private

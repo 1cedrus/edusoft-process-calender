@@ -1,5 +1,5 @@
 // Public
-void requestAccessToken(char *authCode);
+int requestAccessToken(char *authCode);
 void getAccessTokenFromFile(char *accessToken);
 
 

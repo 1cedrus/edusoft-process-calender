@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "includes/data.h"
+#include "../data.h"
 #include <stdlib.h>
 
 rawSubject *s = NULL;

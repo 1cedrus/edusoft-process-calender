@@ -8,8 +8,8 @@ So I make it to get Google Calendar notify me when I have class on my college.
 
 ## Authors
 
-- [@luzky-boyyy](https://github.com/mycodespace-h)
-- [@hisbrother]()
+- [@onecedrus](https://github.com/1cedrus)
+- [@hisbrother](https://github.com/sinzii)
 
 
 ## Guide
@@ -30,7 +30,7 @@ Install curl and json-c
 ```bash
 $ sudo apt update
 $ sudo apt upgrade
-$ sudo apt install curl json-c
+$ sudo apt install curl libjson-c-dev
 ```
     
 Install epc and crawler
@@ -45,3 +45,7 @@ $ make
 ## Thanks you!
 
 That's all. If you coming across with some bug. Send me that. Happy to help you.
+
+## Updating...
+
+More automatic and ez to use. Pls watting

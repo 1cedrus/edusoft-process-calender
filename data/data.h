@@ -37,3 +37,4 @@ int dayThisMonthHas(int month);
 void dateUpdater(char *date, int dayIsRaised);
 int dayConvert(const char *rawDay);
 int isDigit(char ch);
+void checkLog(subject *s);

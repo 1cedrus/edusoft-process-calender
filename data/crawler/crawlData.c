@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "../data.h"
 #include <stdlib.h>
+#include <curl/curl.h>
 
 rawSubject *s = NULL;
 char *buffer = NULL;    

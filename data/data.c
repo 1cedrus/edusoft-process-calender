@@ -41,9 +41,9 @@ void addSubject(rawSubject *s) {
     json_object_object_add(newSubject, "Calender", newCalendar);
     json_object_object_add(newSubject, "DSSV", newDSSV);
 
-    data = json_object_from_file("./crawler/rawSubject.json");
+    data = json_object_from_file("rawSubject.json");
     json_object_array_add(data, newSubject);
-    json_object_to_file("./crawler/rawSubject.json", data);
+    json_object_to_file("rawSubject.json", data);
 }
 
 
@@ -100,12 +100,12 @@ void add(rawSubject *s, int pos, char *buffer) {
 
 void updateCalendar(subject *s) {
 
-    clearData("../check.log");
+    clearData("check.log");
 
     json_object *database, *rawName, *rawGroupID, *rawDay, *rawTime, *rawST, *rawClassName, *rawCalendar, *rawSub;
     size_t nOfSub;
 
-    database = json_object_from_file("./crawler/rawSubjects.json");
+    database = json_object_from_file("./data/crawler/rawSubjects.json");
     nOfSub = json_object_array_length(database);
 
     for (int sub = 0; sub < nOfSub; sub++) {
@@ -281,7 +281,7 @@ int endTimeGener(const char *rawTime, const char *rawST) {
 }
 
 void checkLog(subject *s) {
-    FILE *fp = fopen("../check.log", "a");
+    FILE *fp = fopen("check.log", "a");
     fprintf(fp, "%s\t%s\t%s\n", s->name, s->startTime, s->endTime);
     fclose(fp);
 }

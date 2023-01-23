@@ -41,9 +41,10 @@ void addSubject(rawSubject *s) {
     json_object_object_add(newSubject, "Calender", newCalendar);
     json_object_object_add(newSubject, "DSSV", newDSSV);
 
-    data = json_object_from_file("rawSubject.json");
+
+    data = json_object_from_file("rawSubjects.json");
     json_object_array_add(data, newSubject);
-    json_object_to_file("rawSubject.json", data);
+    json_object_to_file("rawSubjects.json", data);
 }
 
 
@@ -100,8 +101,6 @@ void add(rawSubject *s, int pos, char *buffer) {
 
 void updateCalendar(subject *s) {
 
-    clearData("check.log");
-
     json_object *database, *rawName, *rawGroupID, *rawDay, *rawTime, *rawST, *rawClassName, *rawCalendar, *rawSub;
     size_t nOfSub;
 
@@ -120,9 +119,10 @@ void updateCalendar(subject *s) {
 
         sprintf(s->name, "%s x %s", json_object_get_string(rawName), json_object_get_string(rawClassName));
         int startTime, endTime;
-        char date[] = "2022-08-15";
+        char date[] = "2023-01-30";
         const char *calendar = json_object_get_string(rawCalendar);
-        for (int week = 0; week < strlen(calendar); week++) {
+        int calendarLength = strlen(calendar);
+        for (int week = 0; week < calendarLength; week++) {
             if (week != 0) dateUpdater(date, 7);
             if (isDigit(calendar[week])) {
                 char *dateClone = strdup(date);
@@ -139,7 +139,6 @@ void updateCalendar(subject *s) {
                     sprintf(s->endTime, "%sT0%i:50:00+07:00", dateClone, endTime);
 
                 calendarEventRes(s);
-                checkLog(s);
             }
         }
     }
@@ -296,10 +295,10 @@ void calendarEventRes(subject *s) {
     CURL *curl;
     CURLcode res;
 
-    char accessToken[250];
+    char accessToken[300];
     getAccessTokenFromFile(accessToken);
 
-    char headerAuth[300];
+    char headerAuth[400];
     sprintf(headerAuth, "Authorization: Bearer %s", accessToken);
 
     char paramaterInNeed[400];

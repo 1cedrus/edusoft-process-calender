@@ -1,3 +1,5 @@
+#include <stddef.h>
+#include <curl/curl.h>
 // Public
 int requestAccessToken(char *authCode);
 void getAccessTokenFromFile(char *accessToken);

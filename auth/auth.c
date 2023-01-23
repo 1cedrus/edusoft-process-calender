@@ -10,7 +10,7 @@ int requestAccessToken(char *authCode) {
     CURL *curl;
     CURLcode res;
 
-    clearData("./auth/requestRespond.json");
+    // clearData("./auth/requestRespond.json");
 
     char paramaterInNeed[300];
     sprintf(paramaterInNeed, "client_id=812237032448-g3s99dj31nlt7i9hp1f2beltkc8rirhk.apps.googleusercontent.com&code=%s&client_secret=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&redirect_uri=urn:ietf:wg:oauth:2.0:oob&grant_type=authorization_code", authCode);
@@ -23,7 +23,6 @@ int requestAccessToken(char *authCode) {
         chunk = curl_slist_append(chunk, "Content-type: application/x-www-form-urlencoded");
         chunk = curl_slist_append(chunk, "Cache-Control: no-cache");
 
-        curl_easy_setopt(curl, CURLOPT_URL, "https://accounts.google.com/o/oauth2/v2/auth");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
         curl_easy_setopt(curl, CURLOPT_URL, "https://accounts.google.com/o/oauth2/token");
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, paramaterInNeed);

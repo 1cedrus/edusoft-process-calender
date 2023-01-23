@@ -109,7 +109,7 @@ void getDataFromWeb(void) {
 
 int main (void) {
 
-    FILE *fp = fopen("rawSubject.json", "w");
+    FILE *fp = fopen("rawSubjects.json", "w");
     fprintf(fp, "[]");
     fclose(fp);
 

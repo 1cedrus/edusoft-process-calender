@@ -10,7 +10,7 @@ int requestAccessToken(char *authCode) {
     CURL *curl;
     CURLcode res;
 
-    // clearData("./auth/requestRespond.json");
+    clearData("./auth/requestRespond.json");
 
     char paramaterInNeed[300];
     sprintf(paramaterInNeed, "client_id=812237032448-g3s99dj31nlt7i9hp1f2beltkc8rirhk.apps.googleusercontent.com&code=%s&client_secret=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&redirect_uri=urn:ietf:wg:oauth:2.0:oob&grant_type=authorization_code", authCode);
@@ -45,7 +45,7 @@ int requestAccessToken(char *authCode) {
 
 void getAccessTokenFromFile(char *accessToken) {
 
-    json_object *database = json_object_from_file(".auth/requestRespond.json");
+    json_object *database = json_object_from_file("./auth/requestRespond.json");
     json_object *rawAccessToken = json_object_object_get(database, "access_token");
 
     sprintf(accessToken, "%s", json_object_get_string(rawAccessToken));

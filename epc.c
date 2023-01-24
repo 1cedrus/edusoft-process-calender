@@ -13,18 +13,16 @@ int main(int argc, char *argv[]) {
     int set;
 
     // system("open ./auth/getAuthCode.html");
-    // sleep(1);
+    char authCode[300];
+    printf("Paste authorization code here and hit enter\n");
 
-    // char authCode[200];
-    // printf("Paste authorization code here and hit enter\n");
-
-    // scanf("%199s", authCode);
-    // set = requestAccessToken(authCode);
-    // if (!set) printf("_________Get access token succeed!_________\n");
-    // else {
-    //     printf("_________Get access token failed!_________\n");
-    //     return 1;
-    // }
+    scanf("%199s", authCode);
+    set = requestAccessToken(authCode);
+    if (!set) printf("_________Get access token succeed!_________\n");
+    else {
+        printf("_________Get access token failed!_________\n");
+        return 1;
+    }
 
 
     printf("__________Ready to start!_________\n");

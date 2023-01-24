@@ -186,7 +186,7 @@ void dateUpdater(char *date, int dayIsRaised) {
         month += 1;
     }
     else if (dayThisMonthHas(month == 2)) {
-        if (year % 4 == 0 && year % 100 != 0 && day > 29) {
+        if (year % 4 == 0 && day > 29) {
             day -= 29;
             month += 1;
         } 
@@ -287,10 +287,13 @@ void checkLog(subject *s) {
 
 void clearData(char *fileName) {
     FILE *fp = fopen(fileName, "w"); 
+    fprintf(fp, " ");
     fclose(fp);
 }
 
 void calendarEventRes(subject *s) {
+
+    printf("%s %s x %s\n", s->name, s->startTime, s->endTime);
 
     CURL *curl;
     CURLcode res;

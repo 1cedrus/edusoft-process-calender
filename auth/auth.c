@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <curl/curl.h>
 #include <json-c/json.h>
 #include "../data/data.h"
@@ -11,6 +12,7 @@ int requestAccessToken(char *authCode) {
     CURLcode res;
 
     clearData("./auth/requestRespond.json");
+    // sleep(1);
 
     char paramaterInNeed[300];
     sprintf(paramaterInNeed, "client_id=812237032448-g3s99dj31nlt7i9hp1f2beltkc8rirhk.apps.googleusercontent.com&code=%s&client_secret=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&redirect_uri=urn:ietf:wg:oauth:2.0:oob&grant_type=authorization_code", authCode);

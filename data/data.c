@@ -101,6 +101,9 @@ void add(rawSubject *s, int pos, char *buffer) {
 
 void updateCalendar(subject *s) {
 
+    char accessToken[300];
+    getAccessTokenFromFile(accessToken);
+
     json_object *database, *rawName, *rawGroupID, *rawDay, *rawTime, *rawST, *rawClassName, *rawCalendar, *rawSub;
     size_t nOfSub;
 
@@ -138,7 +141,7 @@ void updateCalendar(subject *s) {
                 else 
                     sprintf(s->endTime, "%sT0%i:50:00+07:00", dateClone, endTime);
 
-                calendarEventRes(s);
+                calendarEventRes(s, accessToken);
             }
         }
     }
@@ -185,7 +188,7 @@ void dateUpdater(char *date, int dayIsRaised) {
         day -= 30;
         month += 1;
     }
-    else if (dayThisMonthHas(month == 2)) {
+    else if (dayThisMonthHas(month) == 2) {
         if (year % 4 == 0 && day > 29) {
             day -= 29;
             month += 1;
@@ -291,15 +294,16 @@ void clearData(char *fileName) {
     fclose(fp);
 }
 
-void calendarEventRes(subject *s) {
+void handleResponse() {
+    return;
+}
+
+void calendarEventRes(subject *s, char *accessToken) {
 
     printf("%s %s x %s\n", s->name, s->startTime, s->endTime);
 
     CURL *curl;
     CURLcode res;
-
-    char accessToken[300];
-    getAccessTokenFromFile(accessToken);
 
     char headerAuth[400];
     sprintf(headerAuth, "Authorization: Bearer %s", accessToken);
@@ -316,6 +320,7 @@ void calendarEventRes(subject *s) {
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
         curl_easy_setopt(curl, CURLOPT_URL, "https://www.googleapis.com/calendar/v3/calendars/primary/events/");
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, paramaterInNeed);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, handleResponse);
 
         res = curl_easy_perform(curl);
 

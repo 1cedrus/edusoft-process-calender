@@ -30,7 +30,7 @@ Install curl and json-c
 ```bash
 $ sudo apt update
 $ sudo apt upgrade
-$ sudo apt-get install libcurl4-gnutls-dev
+$ sudo apt-get install libcurl4-gnutls-dev libjson-c-dev
 ```
     
 Install epc and crawler

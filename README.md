@@ -6,9 +6,12 @@ This is a project which I came up with when I was feeling so sad, I had forgot m
 So I make it to get Google Calendar notify me when I have class on my college.
 
 
-## Authors
+## Author
 
 - [@onecedrus](https://github.com/1cedrus)
+
+## Support
+
 - [@hisbrother](https://github.com/sinzii)
 
 

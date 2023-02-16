@@ -31,7 +31,7 @@ size_t parser(char *in, size_t nmem, size_t nitems, void* out) {
         else if (flag == 3 && in[i] == '>') {
             cExtraArrow--;
 
-            if (cExtraArrow == 0 && nInfor == 7 && in[i + 1] == '<') {
+            if (cExtraArrow == 0 && ( nInfor == 7 || nInfor == 12 ) && in[i + 1] == '<') {
                 // printf(" \n");
                 count += 1;
                 buffer = realloc(buffer, count);
@@ -70,7 +70,7 @@ size_t parser(char *in, size_t nmem, size_t nitems, void* out) {
                 nInfor = 0;
             }    
 
-            if (nSubjects == 13) {
+            if (nSubjects == 31) {
                 flag = -1;
                 return bytes;
             }
@@ -96,7 +96,7 @@ void getDataFromWeb(void) {
         struct curl_slist *chunk = NULL;
         chunk = curl_slist_append(chunk, header);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-        curl_easy_setopt(curl, CURLOPT_URL, "https://qldt.ptit.edu.vn/default.aspx?page=thoikhoabieu&sta=1");
+        curl_easy_setopt(curl, CURLOPT_URL, "http://daotao.vnua.edu.vn/default.aspx?page=thoikhoabieu&sta=1&id=6652799");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, parser);
 
         code = curl_easy_perform(curl);

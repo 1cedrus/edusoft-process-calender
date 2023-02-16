@@ -24,6 +24,7 @@ void addSubject(rawSubject *s) {
     json_object *newST = json_object_new_string(s->ST);
     json_object *newClassName = json_object_new_string(s->className);
     json_object *newCalendar = json_object_new_string(s->calendar);
+    json_object *newCBGV = json_object_new_string(s->CBGV);
     json_object *newDSSV = json_object_new_string(s->DSSV);
 
     json_object_object_add(newSubject, "ID", newID);
@@ -38,7 +39,8 @@ void addSubject(rawSubject *s) {
     json_object_object_add(newSubject, "Time", newTime);
     json_object_object_add(newSubject, "ST", newST);
     json_object_object_add(newSubject, "ClassName", newClassName);
-    json_object_object_add(newSubject, "Calender", newCalendar);
+    json_object_object_add(newSubject, "CBGV", newCBGV);
+    json_object_object_add(newSubject, "Calendar", newCalendar);
     json_object_object_add(newSubject, "DSSV", newDSSV);
 
 
@@ -122,8 +124,9 @@ void updateCalendar(subject *s) {
 
         sprintf(s->name, "%s x %s", json_object_get_string(rawName), json_object_get_string(rawClassName));
         int startTime, endTime;
-        char date[] = "2023-01-30";
+        char date[] = "2023-01-16";
         const char *calendar = json_object_get_string(rawCalendar);
+        // printf("%s", json_object_get_string(rawCalendar));
         int calendarLength = strlen(calendar);
         for (int week = 0; week < calendarLength; week++) {
             if (week != 0) dateUpdater(date, 7);
@@ -133,15 +136,16 @@ void updateCalendar(subject *s) {
                 startTime = startTimeGener(json_object_get_string(rawTime));
                 endTime = endTimeGener(json_object_get_string(rawTime), json_object_get_string(rawST));
                 if (startTime >= 10) 
-                    sprintf(s->startTime, "%sT%i:00:00+07:00", dateClone, startTime);
+                    sprintf(s->startTime, "%sT%i:45:00+07:00", dateClone, startTime);
                 else 
-                    sprintf(s->startTime, "%sT0%i:00:00+07:00", dateClone, startTime);
+                    sprintf(s->startTime, "%sT0%i:45:00+07:00", dateClone, startTime);
                 if (endTime >= 10) 
-                    sprintf(s->endTime, "%sT%i:50:00+07:00", dateClone, endTime);
+                    sprintf(s->endTime, "%sT%i:30:00+07:00", dateClone, endTime);
                 else 
-                    sprintf(s->endTime, "%sT0%i:50:00+07:00", dateClone, endTime);
+                    sprintf(s->endTime, "%sT0%i:30:00+07:00", dateClone, endTime);
 
                 calendarEventRes(s, accessToken);
+                // printf(s);
             }
         }
     }
@@ -238,22 +242,31 @@ int startTimeGener(const char *rawTime) {
     switch (atoi(rawTime))
     {
     case 1:
+        return 6;
+        break;
+    case 2: 
         return 7;
         break;
     case 3:
+        return 8;
+        break;
+    case 4: 
         return 9;
         break;
     case 5:
+        return 10;
+        break;
+    case 6: 
         return 12;
         break;
     case 7:
+        return 13;
+        break;
+    case 8:
         return 14;
         break;
     case 9:
-        return 16;
-        break;
-    case 11:
-        return 18;
+        return 15;
         break;
     }
 }
@@ -262,22 +275,31 @@ int endTimeGener(const char *rawTime, const char *rawST) {
     switch (atoi(rawTime))
     {
     case 1:
-        return 7 + atoi(rawST) - 1;
+        return 6 + atoi(rawST);
+        break;
+    case 2: 
+        return 7 + atoi(rawST);
         break;
     case 3:
-        return 9 + atoi(rawST) - 1;
+        return 8 + atoi(rawST);
+        break;
+    case 4: 
+        return 9 + atoi(rawST);
         break;
     case 5:
-        return 12 + atoi(rawST) - 1;
+        return 10 + atoi(rawST);
+        break;
+    case 6: 
+        return 12 + atoi(rawST);
         break;
     case 7:
-        return 14 + atoi(rawST) - 1;
+        return 13 + atoi(rawST);
+        break;
+    case 8:
+        return 14 + atoi(rawST);
         break;
     case 9:
-        return 16 + atoi(rawST) - 1;
-        break;
-    case 11:
-        return 18 + atoi(rawST) - 1;
+        return 15 + atoi(rawST);
         break;
     }
 }
@@ -320,7 +342,6 @@ void calendarEventRes(subject *s, char *accessToken) {
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
         curl_easy_setopt(curl, CURLOPT_URL, "https://www.googleapis.com/calendar/v3/calendars/primary/events/");
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, paramaterInNeed);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, handleResponse);
 
         res = curl_easy_perform(curl);
 

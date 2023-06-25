@@ -1,4 +1,6 @@
 
+# This CLI program is outdated and no longer valid with new UX/UI update of PTIT website
+
 # EPC (Edusoft - Process - Calendar)
 
 
@@ -52,3 +54,4 @@ That's all. If you coming across with some bug. Send me that. Happy to help you.
 ## Updating...
 
 More automatic and ez to use. Pls watting
+

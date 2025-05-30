@@ -1,21 +1,8 @@
-
-# This CLI program is outdated and no longer valid with new UX/UI update of PTIT website
-
 # EPC (Edusoft - Process - Calendar)
 
 
 This is a project which I came up with when I was feeling so sad, I had forgot my schedule.
 So I make it to get Google Calendar notify me when I have class on my college.
-
-
-## Author
-
-- [@onecedrus](https://github.com/1cedrus)
-
-## Support
-
-- [@hisbrother](https://github.com/sinzii)
-
 
 ## Guide
 To use this tool, first of all, you must crawl data about your schedule on your school's edusoft website. 
